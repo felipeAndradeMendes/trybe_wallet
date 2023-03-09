@@ -1,3 +1,5 @@
+import { SAVE_CURRENCIES } from '../actions/actionTypes';
+
 const INITIAL_STATE = {
   currencies: [],
   expenses: [],
@@ -6,7 +8,13 @@ const INITIAL_STATE = {
 };
 
 const wallet = (state = INITIAL_STATE, actions) => {
+  // console.log('reducer:', actions.payload)
   switch (actions.type) {
+  case SAVE_CURRENCIES:
+    return {
+      ...state,
+      currencies: actions.payload,
+    };
   default: return state;
   }
 };

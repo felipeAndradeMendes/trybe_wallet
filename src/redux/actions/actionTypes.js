@@ -1,1 +1,2 @@
 export const USER_EMAIL = 'USER_EMAIL';
+export const SAVE_CURRENCIES = 'SAVE_CURRENCIES';
