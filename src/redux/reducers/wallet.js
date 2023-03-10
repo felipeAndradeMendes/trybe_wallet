@@ -1,4 +1,4 @@
-import { SAVE_CURRENCIES } from '../actions/actionTypes';
+import { SAVE_CURRENCIES, SAVE_PRICE_QUOTES } from '../actions/actionTypes';
 
 const INITIAL_STATE = {
   currencies: [],
@@ -14,6 +14,11 @@ const wallet = (state = INITIAL_STATE, actions) => {
     return {
       ...state,
       currencies: actions.payload,
+    };
+  case SAVE_PRICE_QUOTES:
+    return {
+      ...state,
+      expenses: [...state.expenses, actions.payload],
     };
   default: return state;
   }

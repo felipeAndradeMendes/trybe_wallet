@@ -8,6 +8,23 @@ class Header extends Component {
     currency: 'BRL',
   };
 
+  componentDidUpdate() {
+    this.sumExpenses();
+  }
+
+  sumExpenses = () => {
+    const { expenses } = this.props;
+    console.log('DESPESAS:', expenses);
+
+    const newArr = expenses.map(({ valor, currency, exchangeRates }) => (
+      exchangeRates.USD
+    ));
+    console.log('SOMA:', newArr);
+
+    // console.log(expenses[0].exchangeRates['expenses.currency']);
+    // CEHCAR SE FORMATO DO OBJETO ESTÁ CERTO NA CHAVE EXCHANGE RATES
+  };
+
   render() {
     const { userEmail } = this.props;
     const { totalExpenses, currency } = this.state;
@@ -34,6 +51,7 @@ class Header extends Component {
 
 const mapStateToProps = (state) => ({
   userEmail: state.user.email,
+  expenses: state.wallet.expenses,
 });
 
 Header.propTypes = {
