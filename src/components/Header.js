@@ -4,30 +4,27 @@ import PropTypes from 'prop-types';
 
 class Header extends Component {
   state = {
-    totalExpenses: 0,
+    // totalExpenses: ,
     currency: 'BRL',
   };
 
-  componentDidUpdate() {
-    this.sumExpenses();
-  }
+  // componentDidUpdate() {
+  //   this.sumExpenses();
+  // }
 
-  sumExpenses = () => {
-    const { expenses } = this.props;
-    console.log('DESPESAS:', expenses);
+  // sumExpenses = () => {
+  //   const { expenses } = this.props;
 
-    const newArr = expenses.map(({ valor, currency, exchangeRates }) => (
-      exchangeRates.USD
-    ));
-    console.log('SOMA:', newArr);
-
-    // console.log(expenses[0].exchangeRates['expenses.currency']);
-    // CEHCAR SE FORMATO DO OBJETO ESTÁ CERTO NA CHAVE EXCHANGE RATES
-  };
+  //   const mapExpenses = expenses.map(({ valor, currency, exchangeRates }) => (
+  //     (valor * exchangeRates[currency].ask).toFixed(2)
+  //   ));
+  //   const totalSum = mapExpenses.reduce((cur, acc) => Number(cur) + Number(acc));
+  //   console.log('SOMA', totalSum);
+  // };
 
   render() {
-    const { userEmail } = this.props;
-    const { totalExpenses, currency } = this.state;
+    const { userEmail, totalExpensesGlobal } = this.props;
+    const { currency } = this.state;
     return (
       <>
         <div>Header</div>
@@ -37,8 +34,7 @@ class Header extends Component {
         </p>
 
         <p data-testid="total-field">
-          Despesa Total:
-          { ` ${totalExpenses}` }
+          { `${totalExpensesGlobal || 0}` }
         </p>
 
         <p data-testid="header-currency-field">
@@ -52,6 +48,7 @@ class Header extends Component {
 const mapStateToProps = (state) => ({
   userEmail: state.user.email,
   expenses: state.wallet.expenses,
+  totalExpensesGlobal: state.wallet.totalExpense,
 });
 
 Header.propTypes = {

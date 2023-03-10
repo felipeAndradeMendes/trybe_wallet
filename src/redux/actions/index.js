@@ -1,4 +1,9 @@
-import { USER_EMAIL, SAVE_CURRENCIES, SAVE_PRICE_QUOTES } from './actionTypes';
+import {
+  USER_EMAIL,
+  SAVE_CURRENCIES,
+  SAVE_PRICE_QUOTES,
+  SAVE_TOTAL_EXPENSES,
+} from './actionTypes';
 import { fetchCurrencies } from '../../services';
 
 // SYNC //
@@ -16,6 +21,22 @@ export const savePriceQuotes = (currencies) => ({
   type: SAVE_PRICE_QUOTES,
   payload: currencies,
 });
+
+export const saveTotalExpenses = (totalExp) => ({
+  type: SAVE_TOTAL_EXPENSES,
+  payload: totalExp,
+});
+
+// const sumExpenses = () => {
+//   const { expenses } = this.props;
+//   const mapExpenses = expenses.map(({ valor, currency, exchangeRates }) => (
+//     (valor * exchangeRates[currency].ask).toFixed(2)
+//   ));
+//   const totalSum = mapExpenses.reduce((cur, acc) => Number(cur) + Number(acc), 0);
+
+//   console.log('SOMA', totalSum);
+//   return totalSum;
+// };
 
 // ////////// //
 // ASYNC ///
@@ -37,5 +58,8 @@ export const fetchPriceQuote = (obj) => async (dispatch) => {
   // CONFERIR SE ESSE FORMATO DE OBJETO ACIMA INTERFERE NOS TESTES
   // SE SIM, USAR SOMENTE 'GETCURRENCIES' COMO VALOR DE 'EXCHANGERATES'
   // console.log('DESPESAS E COTAÇÃO:', newObj);
+
   dispatch(savePriceQuotes(newObj));
+  // const totalExpenses = sumExpenses();
+  // dispatch(saveTotalExpenses(totalExpenses));
 };
