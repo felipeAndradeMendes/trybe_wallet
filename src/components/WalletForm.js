@@ -63,7 +63,7 @@ class WalletForm extends Component {
     ));
     const totalSum = mapExpenses.reduce((cur, acc) => Number(cur) + Number(acc), 0);
 
-    console.log('SOMA', totalSum);
+    // console.log('SOMA', totalSum);
     return totalSum;
   };
 
