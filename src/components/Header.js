@@ -8,20 +8,6 @@ class Header extends Component {
     currency: 'BRL',
   };
 
-  // componentDidUpdate() {
-  //   this.sumExpenses();
-  // }
-
-  // sumExpenses = () => {
-  //   const { expenses } = this.props;
-
-  //   const mapExpenses = expenses.map(({ valor, currency, exchangeRates }) => (
-  //     (valor * exchangeRates[currency].ask).toFixed(2)
-  //   ));
-  //   const totalSum = mapExpenses.reduce((cur, acc) => Number(cur) + Number(acc));
-  //   console.log('SOMA', totalSum);
-  // };
-
   render() {
     const { userEmail, totalExpensesGlobal } = this.props;
     const { currency } = this.state;

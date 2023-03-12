@@ -13,7 +13,6 @@ const INITIAL_STATE = {
 };
 
 const wallet = (state = INITIAL_STATE, actions) => {
-  // console.log('reducer:', actions.payload)
   switch (actions.type) {
   case SAVE_CURRENCIES:
     return {

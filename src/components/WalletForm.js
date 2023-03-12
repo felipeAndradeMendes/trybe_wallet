@@ -22,25 +22,13 @@ class WalletForm extends Component {
 
   componentDidUpdate(prevProps) {
     const { dispatch, expenses } = this.props;
-    // const { id, valor, description, currency, method, tag } = this.state;
-    console.log('EXPENSES LENGTH', expenses.length);
-    // if (prevState.id !== this.state.id) {
+    // console.log('EXPENSES LENGTH', expenses.length);
+
+    // Se houve mudança no tamanho do arrya de expenses, chama dispatch
+    // que atualiza o valor ttal do state global/header
     if (prevProps.expenses.length !== expenses.length) {
-      // const expenseObj = {
-      //   id,
-      //   value: valor,
-      //   currency,
-      //   description,
-      //   method,
-      //   tag,
-      //   exchangeRates: {},
-      // };
-
-      // dispatch(fetchPriceQuote(expenseObj));
-
       const totalExpenses = this.sumExpenses();
       dispatch(saveTotalExpenses(totalExpenses));
-      console.log('atualizou!');
     }
   }
 
@@ -53,7 +41,6 @@ class WalletForm extends Component {
 
   handleclick = () => {
     console.log('cliquei');
-
     const { id, valor, description, currency, method, tag } = this.state;
     const { dispatch } = this.props;
 
@@ -67,6 +54,9 @@ class WalletForm extends Component {
       exchangeRates: {},
     };
 
+    // Importante essa ordem de execução abaixo:
+    // Somente após o fetch feito e obj de expense feito, é atualizado o estado local.
+    // Após o dispatch, é acrescentado mais um item ao expenses/global e ativa compDiUpdate acima;
     dispatch(fetchPriceQuote(expenseObj));
 
     this.setState((prevState) => ({
@@ -74,12 +64,6 @@ class WalletForm extends Component {
       valor: '',
       description: '',
     }));
-    // const sec = 1000;
-    // dispatch(fetchPriceQuote(expenseObj));
-    // setTimeout(() => {
-    //   const totalExpenses = this.sumExpenses();
-    //   dispatch(saveTotalExpenses(totalExpenses));
-    // }, sec);
   };
 
   sumExpenses = () => {
@@ -89,14 +73,12 @@ class WalletForm extends Component {
     ));
     const totalSum = mapExpenses.reduce((cur, acc) => Number(cur) + Number(acc), 0);
 
-    // console.log('SOMA', totalSum);
     return (totalSum).toFixed(2);
   };
 
   render() {
     const { valor, currency, description, method, tag } = this.state;
     const { currenciesNames } = this.props;
-    // console.log(currenciesNames);
     return (
       <>
         <div>WalletForm</div>

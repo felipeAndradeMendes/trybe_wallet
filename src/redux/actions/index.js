@@ -33,23 +33,11 @@ export const deleteExpense = (updatedExp) => ({
   payload: updatedExp,
 });
 
-// const sumExpenses = () => {
-//   const { expenses } = this.props;
-//   const mapExpenses = expenses.map(({ valor, currency, exchangeRates }) => (
-//     (valor * exchangeRates[currency].ask).toFixed(2)
-//   ));
-//   const totalSum = mapExpenses.reduce((cur, acc) => Number(cur) + Number(acc), 0);
-
-//   console.log('SOMA', totalSum);
-//   return totalSum;
-// };
-
-// ////////// //
+// //////// //
 // ASYNC ///
 
 export const fetchCurrenciesAction = () => async (dispatch) => {
   const getCurrencies = await fetchCurrencies();
-  // console.log(Object.keys(getCurrencies));
   const currencieskeys = Object.keys(getCurrencies);
   dispatch(saveCurrecies(currencieskeys));
 };
@@ -63,9 +51,6 @@ export const fetchPriceQuote = (obj) => async (dispatch) => {
   };
   // CONFERIR SE ESSE FORMATO DE OBJETO ACIMA INTERFERE NOS TESTES
   // SE SIM, USAR SOMENTE 'GETCURRENCIES' COMO VALOR DE 'EXCHANGERATES'
-  // console.log('DESPESAS E COTAÇÃO:', newObj);
 
   dispatch(savePriceQuotes(newObj));
-  // const totalExpenses = sumExpenses();
-  // dispatch(saveTotalExpenses(totalExpenses));
 };

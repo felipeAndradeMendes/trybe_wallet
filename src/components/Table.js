@@ -17,7 +17,6 @@ class Table extends Component {
 
   render() {
     const { expensesGlobal } = this.props;
-    // console.log(expensesGlobal);
     return (
       <>
         <div>Table</div>
@@ -53,7 +52,6 @@ class Table extends Component {
                 <td>{ exchangeRates[currency].name }</td>
                 <td>{ Number((exchangeRates[currency].ask)).toFixed(2) }</td>
                 <td>{ (value * exchangeRates[currency].ask).toFixed(2) }</td>
-                {/* <td>{ Number((exchangeRates[currency].ask)).toFixed(2) }</td> */}
                 <td>Real</td>
                 <td>
                   <button
