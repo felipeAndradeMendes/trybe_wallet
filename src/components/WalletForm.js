@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { fetchCurrenciesAction,
   fetchPriceQuote,
+  fetchPriceQuoteToEditedExpense,
   saveTotalExpenses } from '../redux/actions';
 
 class WalletForm extends Component {
@@ -21,16 +22,42 @@ class WalletForm extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { dispatch, expenses } = this.props;
+    const { dispatch, expenses, walletState } = this.props;
     // console.log('EXPENSES LENGTH', expenses.length);
 
     // Se houve mudança no tamanho do arrya de expenses, chama dispatch
     // que atualiza o valor ttal do state global/header
-    if (prevProps.expenses.length !== expenses.length) {
+    if (prevProps.expenses.length !== expenses.length
+      || prevProps.walletState.editor !== walletState.editor) {
       const totalExpenses = this.sumExpenses();
       dispatch(saveTotalExpenses(totalExpenses));
     }
+
+    if (prevProps.walletState.editor !== walletState.editor) {
+      console.log('caráio, mudou pra edição!');
+      this.changeStateToEdit();
+    }
   }
+
+  changeStateToEdit = () => {
+    const { walletState: { idToEdit }, expenses } = this.props;
+
+    // console.log('ID TO EDIT', idToEdit);
+
+    const foundExpense = expenses.find((expense) => expense.id === Number(idToEdit));
+
+    console.log(foundExpense);
+
+    const { id, value, currency, description, method, tag } = foundExpense;
+    this.setState({
+      id,
+      valor: value,
+      currency,
+      description,
+      method,
+      tag,
+    });
+  };
 
   handleChange = ({ target }) => {
     const { name, value } = target;
@@ -42,7 +69,7 @@ class WalletForm extends Component {
   handleclick = () => {
     console.log('cliquei');
     const { id, valor, description, currency, method, tag } = this.state;
-    const { dispatch } = this.props;
+    const { dispatch, walletState, expenses } = this.props;
 
     const expenseObj = {
       id,
@@ -53,17 +80,27 @@ class WalletForm extends Component {
       tag,
       exchangeRates: {},
     };
+    console.log('WALLET STATE EDITOR:', walletState.editor);
+    if (walletState.editor) {
+      console.log('MUDOU PRA SEGUNDA FUNÇÃO DO CLICK');
+      dispatch(fetchPriceQuoteToEditedExpense(expenseObj, id, expenses));
 
-    // Importante essa ordem de execução abaixo:
-    // Somente após o fetch feito e obj de expense feito, é atualizado o estado local.
-    // Após o dispatch, é acrescentado mais um item ao expenses/global e ativa compDiUpdate acima;
-    dispatch(fetchPriceQuote(expenseObj));
+      this.setState({
+        valor: '',
+        description: '',
+      });
+    } else {
+      // Importante essa ordem de execução abaixo:
+      // Somente após o fetch feito e obj de expense feito, é atualizado o estado local.
+      // Após o dispatch, é acrescentado mais um item ao expenses/global e ativa compDiUpdate acima;
+      dispatch(fetchPriceQuote(expenseObj));
 
-    this.setState((prevState) => ({
-      id: prevState.id + 1,
-      valor: '',
-      description: '',
-    }));
+      this.setState((prevState) => ({
+        id: prevState.id + 1,
+        valor: '',
+        description: '',
+      }));
+    }
   };
 
   sumExpenses = () => {
@@ -78,7 +115,7 @@ class WalletForm extends Component {
 
   render() {
     const { valor, currency, description, method, tag } = this.state;
-    const { currenciesNames } = this.props;
+    const { currenciesNames, walletState: { editor } } = this.props;
     return (
       <>
         <div>WalletForm</div>
@@ -164,7 +201,7 @@ class WalletForm extends Component {
           name="adicionarDespesa"
           onClick={ this.handleclick }
         >
-          Adicionar despesa
+          {editor ? 'Editar despesa' : 'Adicionar despesa'}
         </button>
       </>
     );

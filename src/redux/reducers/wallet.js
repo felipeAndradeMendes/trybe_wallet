@@ -3,6 +3,8 @@ import {
   SAVE_PRICE_QUOTES,
   SAVE_TOTAL_EXPENSES,
   DELETE_EXPENSE,
+  EDIT_EXPENSE,
+  SAVE_EDITED_EXPENSE,
 } from '../actions/actionTypes';
 
 const INITIAL_STATE = {
@@ -33,6 +35,18 @@ const wallet = (state = INITIAL_STATE, actions) => {
     return {
       ...state,
       expenses: actions.payload,
+    };
+  case EDIT_EXPENSE:
+    return {
+      ...state,
+      editor: true,
+      idToEdit: actions.payload,
+    };
+  case SAVE_EDITED_EXPENSE:
+    return {
+      ...state,
+      editor: false,
+      expenses: [...actions.payload],
     };
   default: return state;
   }

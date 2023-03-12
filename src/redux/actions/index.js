@@ -4,6 +4,8 @@ import {
   SAVE_PRICE_QUOTES,
   SAVE_TOTAL_EXPENSES,
   DELETE_EXPENSE,
+  EDIT_EXPENSE,
+  SAVE_EDITED_EXPENSE,
 } from './actionTypes';
 import { fetchCurrencies } from '../../services';
 
@@ -33,6 +35,16 @@ export const deleteExpense = (updatedExp) => ({
   payload: updatedExp,
 });
 
+export const editExpense = (id) => ({
+  type: EDIT_EXPENSE,
+  payload: id,
+});
+
+export const saveEditedExpense = (newExpenses) => ({
+  type: SAVE_EDITED_EXPENSE,
+  payload: newExpenses,
+});
+
 // //////// //
 // ASYNC ///
 
@@ -53,4 +65,23 @@ export const fetchPriceQuote = (obj) => async (dispatch) => {
   // SE SIM, USAR SOMENTE 'GETCURRENCIES' COMO VALOR DE 'EXCHANGERATES'
 
   dispatch(savePriceQuotes(newObj));
+};
+
+export const fetchPriceQuoteToEditedExpense = (obj, id, expenses) => async (dispatch) => {
+  const getCurrencies = await fetchCurrencies();
+  const objCurrencies = { ...getCurrencies };
+
+  const foundExpense = expenses.find((expense) => expense.id === Number(id));
+  console.log('FOUND EXPENSE:', foundExpense);
+  const index = expenses.indexOf(foundExpense);
+  console.log('INDEX:', index);
+  const newObjEdited = {
+    ...obj,
+    exchangeRates: objCurrencies,
+  };
+  console.log('NEW OBJ EDITED', newObjEdited);
+  expenses[index] = newObjEdited;
+  console.log('EXPENSES', expenses);
+
+  dispatch(saveEditedExpense(expenses));
 };
