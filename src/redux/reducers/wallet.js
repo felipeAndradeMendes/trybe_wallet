@@ -2,6 +2,7 @@ import {
   SAVE_CURRENCIES,
   SAVE_PRICE_QUOTES,
   SAVE_TOTAL_EXPENSES,
+  DELETE_EXPENSE,
 } from '../actions/actionTypes';
 
 const INITIAL_STATE = {
@@ -28,6 +29,11 @@ const wallet = (state = INITIAL_STATE, actions) => {
     return {
       ...state,
       totalExpense: actions.payload,
+    };
+  case DELETE_EXPENSE:
+    return {
+      ...state,
+      expenses: actions.payload,
     };
   default: return state;
   }

@@ -20,6 +20,30 @@ class WalletForm extends Component {
     dispatch(fetchCurrenciesAction());
   }
 
+  componentDidUpdate(prevProps) {
+    const { dispatch, expenses } = this.props;
+    // const { id, valor, description, currency, method, tag } = this.state;
+    console.log('EXPENSES LENGTH', expenses.length);
+    // if (prevState.id !== this.state.id) {
+    if (prevProps.expenses.length !== expenses.length) {
+      // const expenseObj = {
+      //   id,
+      //   value: valor,
+      //   currency,
+      //   description,
+      //   method,
+      //   tag,
+      //   exchangeRates: {},
+      // };
+
+      // dispatch(fetchPriceQuote(expenseObj));
+
+      const totalExpenses = this.sumExpenses();
+      dispatch(saveTotalExpenses(totalExpenses));
+      console.log('atualizou!');
+    }
+  }
+
   handleChange = ({ target }) => {
     const { name, value } = target;
     this.setState({
@@ -43,17 +67,19 @@ class WalletForm extends Component {
       exchangeRates: {},
     };
 
+    dispatch(fetchPriceQuote(expenseObj));
+
     this.setState((prevState) => ({
       id: prevState.id + 1,
       valor: '',
       description: '',
     }));
-    const sec = 1000;
-    dispatch(fetchPriceQuote(expenseObj));
-    setTimeout(() => {
-      const totalExpenses = this.sumExpenses();
-      dispatch(saveTotalExpenses(totalExpenses));
-    }, sec);
+    // const sec = 1000;
+    // dispatch(fetchPriceQuote(expenseObj));
+    // setTimeout(() => {
+    //   const totalExpenses = this.sumExpenses();
+    //   dispatch(saveTotalExpenses(totalExpenses));
+    // }, sec);
   };
 
   sumExpenses = () => {
@@ -64,7 +90,7 @@ class WalletForm extends Component {
     const totalSum = mapExpenses.reduce((cur, acc) => Number(cur) + Number(acc), 0);
 
     // console.log('SOMA', totalSum);
-    return totalSum;
+    return (totalSum).toFixed(2);
   };
 
   render() {

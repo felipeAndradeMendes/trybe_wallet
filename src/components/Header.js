@@ -34,7 +34,7 @@ class Header extends Component {
         </p>
 
         <p data-testid="total-field">
-          { `${totalExpensesGlobal || 0}` }
+          { `${(totalExpensesGlobal) || 0}` }
         </p>
 
         <p data-testid="header-currency-field">

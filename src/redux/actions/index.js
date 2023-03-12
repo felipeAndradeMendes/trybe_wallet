@@ -3,6 +3,7 @@ import {
   SAVE_CURRENCIES,
   SAVE_PRICE_QUOTES,
   SAVE_TOTAL_EXPENSES,
+  DELETE_EXPENSE,
 } from './actionTypes';
 import { fetchCurrencies } from '../../services';
 
@@ -25,6 +26,11 @@ export const savePriceQuotes = (currencies) => ({
 export const saveTotalExpenses = (totalExp) => ({
   type: SAVE_TOTAL_EXPENSES,
   payload: totalExp,
+});
+
+export const deleteExpense = (updatedExp) => ({
+  type: DELETE_EXPENSE,
+  payload: updatedExp,
 });
 
 // const sumExpenses = () => {
