@@ -33,21 +33,24 @@ class WalletForm extends Component {
       dispatch(saveTotalExpenses(totalExpenses));
     }
 
+    /* Essa segnda condição é chamada ao alterar a chave editor do state global; */
     if (prevProps.walletState.editor !== walletState.editor) {
       console.log('caráio, mudou pra edição!');
       this.changeStateToEdit();
     }
   }
 
+  /* Lida com a expense a ser editada */
   changeStateToEdit = () => {
     const { walletState: { idToEdit }, expenses } = this.props;
 
-    // console.log('ID TO EDIT', idToEdit);
-
+    // Pega a expense que foi clicada, traz o elemento correspondente do array expenses;
     const foundExpense = expenses.find((expense) => expense.id === Number(idToEdit));
 
-    console.log(foundExpense);
+    // console.log(foundExpense);
 
+    // Pre-seta o local state com as infos do elemento a ser editado;
+    // Essas novas infos serão tratadas pelo handleclick, na segunda condição;
     const { id, value, currency, description, method, tag } = foundExpense;
     this.setState({
       id,
@@ -70,7 +73,7 @@ class WalletForm extends Component {
     console.log('cliquei');
     const { id, valor, description, currency, method, tag } = this.state;
     const { dispatch, walletState, expenses } = this.props;
-
+    // Pega as novas infos do local state e forma um obj;
     const expenseObj = {
       id,
       value: valor,
@@ -80,21 +83,27 @@ class WalletForm extends Component {
       tag,
       exchangeRates: {},
     };
-    console.log('WALLET STATE EDITOR:', walletState.editor);
-    if (walletState.editor) {
-      console.log('MUDOU PRA SEGUNDA FUNÇÃO DO CLICK');
-      dispatch(fetchPriceQuoteToEditedExpense(expenseObj, id, expenses));
+    // console.log('WALLET STATE EDITOR:', walletState.editor);
 
+    /* Caso a chave editor/globalState seja true... */
+    // Função do botão para editar despesa;
+    if (walletState.editor) {
+      // console.log('MUDOU PRA SEGUNDA FUNÇÃO DO CLICK');
+      // Chama função assincrona que lida com a readição do elemento editado no mesmo lugar;
+      dispatch(fetchPriceQuoteToEditedExpense(expenseObj, id, expenses));
+      // Reseta o local state para deixar os inputs vazios;
       this.setState({
         valor: '',
         description: '',
       });
+      // Caso a chave editor/globalState seja false...
+      // Função do botão para adicionar tarefas
     } else {
       // Importante essa ordem de execução abaixo:
       // Somente após o fetch feito e obj de expense feito, é atualizado o estado local.
       // Após o dispatch, é acrescentado mais um item ao expenses/global e ativa compDiUpdate acima;
       dispatch(fetchPriceQuote(expenseObj));
-
+      // Reseta o local state para deixar os inputs vazios e adicionar mais 1 ao id;
       this.setState((prevState) => ({
         id: prevState.id + 1,
         valor: '',

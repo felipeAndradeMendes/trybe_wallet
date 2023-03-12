@@ -67,21 +67,31 @@ export const fetchPriceQuote = (obj) => async (dispatch) => {
   dispatch(savePriceQuotes(newObj));
 };
 
+// Função semelhante à acima, mas direcionado especificamente para tratar expense editada;
 export const fetchPriceQuoteToEditedExpense = (obj, id, expenses) => async (dispatch) => {
+  // Fetch nas currencies e spread na constante para adicionar ao obj;
   const getCurrencies = await fetchCurrencies();
   const objCurrencies = { ...getCurrencies };
 
+  // Traz o elemento/expense a ser editado;
   const foundExpense = expenses.find((expense) => expense.id === Number(id));
-  console.log('FOUND EXPENSE:', foundExpense);
+  // console.log('FOUND EXPENSE:', foundExpense);
+
+  // Traz a posição do elemento editado no array expenses;
   const index = expenses.indexOf(foundExpense);
-  console.log('INDEX:', index);
+  // console.log('INDEX:', index);
+
+  // Cria obj editado com adição da currency atualizada no momento da edição;
   const newObjEdited = {
     ...obj,
     exchangeRates: objCurrencies,
   };
-  console.log('NEW OBJ EDITED', newObjEdited);
-  expenses[index] = newObjEdited;
-  console.log('EXPENSES', expenses);
+  // console.log('NEW OBJ EDITED', newObjEdited);
 
+  // Substitui o array expenses não editado, pelo novo já com o elemento editado na posição certa;
+  expenses[index] = newObjEdited;
+  // console.log('EXPENSES', expenses);
+
+  // Chama a action que substituirá o array inteiro pelo editado;
   dispatch(saveEditedExpense(expenses));
 };
