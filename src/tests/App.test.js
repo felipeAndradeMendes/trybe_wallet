@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { act } from 'react-dom/test-utils';
 import App from '../App';
 import { renderWithRouterAndRedux } from './helpers/renderWith';
+import mockData from './helpers/mockData';
 
 const validEmail = 'felipe@gmail.com';
 
@@ -64,7 +65,7 @@ describe('Testa página de login', () => {
     expect(btnEntrar).toBeDisabled();
   });
 
-  test('Ao clicar no botão, leva a rota /carteira', () => {
+  test('Ao clicar no botão, leva a rota /carteira e o email correto apareceno Header', async () => {
     const { history } = renderWithRouterAndRedux(<App />);
 
     const inputEmail = screen.getByPlaceholderText(/email/i);
@@ -144,11 +145,61 @@ describe('Testa component WalletForm', () => {
     const btnAdd = screen.getByRole('button', { name: 'Adicionar despesa' });
     userEvent.click(btnAdd);
 
-    // screen.logTestingPlaygroundURL();
     expect(await screen.findByText(/gasto 01/i)).toBeInTheDocument();
     expect(await screen.findByText('100.00')).toBeInTheDocument();
   });
 });
+
+describe.only('Testa component Table', () => {
+  // const initialEntries = [{
+  //   wallet: {
+  //     expenses: [{
+  //       id: 0,
+  //       value: '10',
+  //       currency: 'USD',
+  //       description: 'gasto 01',
+  //       method: 'dinheiro',
+  //       tag: 'alimentacao',
+  //     }],
+  //   },
+  // };
+
+  const expense01 = [{
+    id: 0,
+    value: 15,
+    currency: 'USD',
+    description: 'gasto 01',
+    method: 'dinheiro',
+    tag: 'alimentacao',
+    exchangeRates: mockData,
+  }];
+
+  const initialState = {
+    wallet: {
+      expenses: expense01,
+    },
+  };
+
+  const initialEntries = ['/carteira'];
+
+  test('O botão editar altera o botão adicionar despesas', () => {
+    renderWithRouterAndRedux(<App />, { initialState, initialEntries });
+    // const { history } = renderWithRouterAndRedux(<App />);
+    // act(() => {
+    //   history.push('/carteira');
+    // });
+    expect(screen.getByRole('button', { name: 'Adicionar despesa' })).toBeVisible();
+
+    const valorInput = screen.getByLabelText('Valor:');
+    userEvent.type(valorInput, '15');
+    const descriptionInput = screen.getByRole('textbox', { name: /descrição:/i });
+    userEvent.type(descriptionInput, 'Despesa 01');
+
+    screen.logTestingPlaygroundURL();
+  });
+});
+
+// AINDA COM PROBLEMAS NO RENDERWITHROUTERANDREDUX...
 
 // userEvent.selectOptions(
 //   screen.getByTestId('currency-input'),
