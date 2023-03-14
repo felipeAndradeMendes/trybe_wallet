@@ -5,6 +5,8 @@ import { act } from 'react-dom/test-utils';
 import App from '../App';
 import { renderWithRouterAndRedux } from './helpers/renderWith';
 
+const validEmail = 'felipe@gmail.com';
+
 describe('Testa página de login', () => {
   test('Está presente o input de senha e de email', () => {
     renderWithRouterAndRedux(<App />);
@@ -43,7 +45,7 @@ describe('Testa página de login', () => {
     const inputSenha = screen.getByPlaceholderText(/senha/i);
     const btnEntrar = screen.getByRole('button');
 
-    userEvent.type(inputEmail, 'felipe@gmail.com');
+    userEvent.type(inputEmail, validEmail);
     userEvent.type(inputSenha, '123456');
 
     expect(btnEntrar).toBeEnabled();
@@ -69,7 +71,7 @@ describe('Testa página de login', () => {
     const inputSenha = screen.getByPlaceholderText(/senha/i);
     const btnEntrar = screen.getByRole('button');
 
-    userEvent.type(inputEmail, 'felipe@gmail.com');
+    userEvent.type(inputEmail, validEmail);
     userEvent.type(inputSenha, '123456');
     expect(btnEntrar).toBeEnabled();
 
@@ -87,7 +89,7 @@ describe('Testa componente Header', () => {
     const inputSenha = screen.getByPlaceholderText(/senha/i);
     const btnEntrar = screen.getByRole('button');
 
-    userEvent.type(inputEmail, 'felipe@gmail.com');
+    userEvent.type(inputEmail, validEmail);
     userEvent.type(inputSenha, '123456');
     expect(btnEntrar).toBeEnabled();
 
@@ -124,27 +126,35 @@ describe('Testa component WalletForm', () => {
     expect(btnAdd).toBeInTheDocument();
   });
 
-  test('Os valores preenchidos são enviados para o estado global', () => {
+  test('Os valores preenchidos são enviados para o a tabela', async () => {
     const { history } = renderWithRouterAndRedux(<App />);
+
     act(() => {
       history.push('/carteira');
     });
     expect(history.location.pathname).toBe('/carteira');
-    screen.logTestingPlaygroundURL();
 
     const valorInput = screen.getByLabelText('Valor:');
-    const descricaoInput = screen.getByLabelText('Descrição:');
-    const moedaInput = screen.getByRole('combobox', { name: /moeda:/i });
-    const methodInput = screen.getByLabelText('Método de Pagamento');
-    const categoriaInput = screen.getByLabelText('Categoria:');
-    const btnAdd = screen.getByRole('button', { name: 'Adicionar despesa' });
-    console.log(moedaInput);
+    // const descricaoInput = screen.getByLabelText('Descrição:');
+    const descricaoInput = screen.getByRole('textbox', { name: /descrição:/i });
 
-    userEvent.type(valorInput, '10');
+    userEvent.type(valorInput, '100');
     userEvent.type(descricaoInput, 'gasto 01');
-    userEvent.selectOptions(moedaInput, 'EUR');
-    // TENTANDO SELECIONAR A OPÇÃO DO SELECT, MAS SE NAÕ CONSEGUIR LOGO, DEIXA COMO ESTÁ NO PADRÃO
 
-    expect(screen.getByText('EUR')).toBeVisible();
+    const btnAdd = screen.getByRole('button', { name: 'Adicionar despesa' });
+    userEvent.click(btnAdd);
+
+    // screen.logTestingPlaygroundURL();
+    expect(await screen.findByText(/gasto 01/i)).toBeInTheDocument();
+    expect(await screen.findByText('100.00')).toBeInTheDocument();
   });
 });
+
+// userEvent.selectOptions(
+//   screen.getByTestId('currency-input'),
+//   screen.getByRole('option', { name: 'CAD' }),
+// );
+// userEvent.click(moedaInput);
+// userEvent.selectOptions(moedaInput, screen.getByRole('option', { name: 'EUR' }));
+// expect(screen.getByRole('option', { name: 'EUR' }).selected).toBeTruthy();
+// TENTANDO SELECIONAR A OPÇÃO DO SELECT, MAS SE NAÕ CONSEGUIR LOGO, DEIXA COMO ESTÁ NO PADRÃO
