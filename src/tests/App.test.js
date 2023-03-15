@@ -65,7 +65,7 @@ describe('Testa página de login', () => {
     expect(btnEntrar).toBeDisabled();
   });
 
-  test('Ao clicar no botão, leva a rota /carteira e o email correto apareceno Header', async () => {
+  test('Ao clicar no botão, leva a rota /carteira e o email correto apareceno Header', () => {
     const { history } = renderWithRouterAndRedux(<App />);
 
     const inputEmail = screen.getByPlaceholderText(/email/i);
@@ -105,6 +105,8 @@ describe('Testa componente Header', () => {
 });
 
 describe('Testa component WalletForm', () => {
+  const btnTextName = 'Adicionar despesa';
+
   test('Renderiza todos os components do formulario', () => {
     const { history } = renderWithRouterAndRedux(<App />);
     act(() => {
@@ -117,7 +119,7 @@ describe('Testa component WalletForm', () => {
     const moedaInput = screen.getByLabelText('Moeda:');
     const methodInput = screen.getByLabelText('Método de Pagamento');
     const categoriaInput = screen.getByLabelText('Categoria:');
-    const btnAdd = screen.getByRole('button', { name: 'Adicionar despesa' });
+    const btnAdd = screen.getByRole('button', { name: btnTextName });
 
     expect(valorInput).toBeInTheDocument();
     expect(descricaoInput).toBeInTheDocument();
@@ -142,7 +144,7 @@ describe('Testa component WalletForm', () => {
     userEvent.type(valorInput, '100');
     userEvent.type(descricaoInput, 'gasto 01');
 
-    const btnAdd = screen.getByRole('button', { name: 'Adicionar despesa' });
+    const btnAdd = screen.getByRole('button', { name: btnTextName });
     userEvent.click(btnAdd);
 
     expect(await screen.findByText(/gasto 01/i)).toBeInTheDocument();
@@ -150,7 +152,9 @@ describe('Testa component WalletForm', () => {
   });
 });
 
-describe.only('Testa component Table', () => {
+describe('Testa component Table', () => {
+  const btnTextName = 'Adicionar despesa';
+
   // const initialEntries = [{
   //   wallet: {
   //     expenses: [{
@@ -173,29 +177,54 @@ describe.only('Testa component Table', () => {
     tag: 'alimentacao',
     exchangeRates: mockData,
   }];
+  const currenciesArray = Object.keys(mockData);
 
   const initialState = {
     wallet: {
+      currencies: currenciesArray,
       expenses: expense01,
     },
   };
 
   const initialEntries = ['/carteira'];
 
-  test('O botão editar altera o botão adicionar despesas', () => {
+  test('O botão editar altera o botão adicionar despesas', async () => {
     renderWithRouterAndRedux(<App />, { initialState, initialEntries });
     // const { history } = renderWithRouterAndRedux(<App />);
     // act(() => {
     //   history.push('/carteira');
     // });
-    expect(screen.getByRole('button', { name: 'Adicionar despesa' })).toBeVisible();
+    expect(screen.getByRole('button', { name: btnTextName })).toBeVisible();
 
     const valorInput = screen.getByLabelText('Valor:');
     userEvent.type(valorInput, '15');
     const descriptionInput = screen.getByRole('textbox', { name: /descrição:/i });
     userEvent.type(descriptionInput, 'Despesa 01');
 
+    expect(screen.getByText('gasto 01')).toBeVisible();
+    expect(screen.getByText('15.00')).toBeVisible();
+
+    const btnEditar = screen.getByRole('button', { name: 'Editar' });
+    expect(btnEditar).toBeInTheDocument();
+
+    userEvent.click(btnEditar);
+    expect(screen.getByRole('button', { name: 'Editar despesa' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: btnTextName })).not.toBeInTheDocument();
+
+    // const valorInput2 = screen.getByLabelText('Valor:');
+
+    userEvent.clear(valorInput);
+    expect(screen.getByLabelText('Valor:').value).toBe('');
+    userEvent.type(valorInput, '10');
+    expect(valorInput.value).toBe('10');
+
+    const btnEditarDespesa = screen.getByRole('button', { name: 'Editar despesa' });
+    expect(btnEditarDespesa).toBeInTheDocument();
+
+    userEvent.click(btnEditarDespesa);
     screen.logTestingPlaygroundURL();
+    expect(valorInput.value).toBe('');
+    expect(await screen.findByText('10.00')).toBeVisible();
   });
 });
 
