@@ -155,19 +155,6 @@ describe('Testa component WalletForm', () => {
 describe('Testa component Table', () => {
   const btnTextName = 'Adicionar despesa';
 
-  // const initialEntries = [{
-  //   wallet: {
-  //     expenses: [{
-  //       id: 0,
-  //       value: '10',
-  //       currency: 'USD',
-  //       description: 'gasto 01',
-  //       method: 'dinheiro',
-  //       tag: 'alimentacao',
-  //     }],
-  //   },
-  // };
-
   const expense01 = [{
     id: 0,
     value: 15,
@@ -190,10 +177,7 @@ describe('Testa component Table', () => {
 
   test('O botão editar altera o botão adicionar despesas', async () => {
     renderWithRouterAndRedux(<App />, { initialState, initialEntries });
-    // const { history } = renderWithRouterAndRedux(<App />);
-    // act(() => {
-    //   history.push('/carteira');
-    // });
+
     expect(screen.getByRole('button', { name: btnTextName })).toBeVisible();
 
     const valorInput = screen.getByLabelText('Valor:');
@@ -211,8 +195,6 @@ describe('Testa component Table', () => {
     expect(screen.getByRole('button', { name: 'Editar despesa' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: btnTextName })).not.toBeInTheDocument();
 
-    // const valorInput2 = screen.getByLabelText('Valor:');
-
     userEvent.clear(valorInput);
     expect(screen.getByLabelText('Valor:').value).toBe('');
     userEvent.type(valorInput, '10');
@@ -227,14 +209,3 @@ describe('Testa component Table', () => {
     expect(await screen.findByText('10.00')).toBeVisible();
   });
 });
-
-// AINDA COM PROBLEMAS NO RENDERWITHROUTERANDREDUX...
-
-// userEvent.selectOptions(
-//   screen.getByTestId('currency-input'),
-//   screen.getByRole('option', { name: 'CAD' }),
-// );
-// userEvent.click(moedaInput);
-// userEvent.selectOptions(moedaInput, screen.getByRole('option', { name: 'EUR' }));
-// expect(screen.getByRole('option', { name: 'EUR' }).selected).toBeTruthy();
-// TENTANDO SELECIONAR A OPÇÃO DO SELECT, MAS SE NAÕ CONSEGUIR LOGO, DEIXA COMO ESTÁ NO PADRÃO
